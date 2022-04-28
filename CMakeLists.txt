@@ -7,9 +7,6 @@ project(decast_testing)
 # Добавить в сборку исполняемый файл "MyProgram":
 add_executable(next_id next_id.c)
 
-# Установить исполняемый файл в директорию "bin":
-install(TARGETS next_id DESTINATION bin)
-
 enable_testing()
 
 # Добавить тесты:
