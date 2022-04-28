@@ -69,51 +69,33 @@ int next_id(char *in, char *out) {
     
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+    if (argc < 2) {
+        printf("Not enough arguments");
+        return 1;
+    }
+    if (argc > 2) {
+        printf("Too many arguments");
+        return 1;
+    }
+    if (strlen(argv[1]) > 29) {
+        printf ("ID is too long");
+        return 1;
+    }
+    if (strlen(argv[1]) < 2) {
+        printf ("ID is too short");
+        return 1;
+    }
+    
     // длина строки "??"*10 + "-"*9 + "\0" = 30
     char input[30], output[30];
-    char test[16][30] = {   "B1",
-                            "B1-B1",
-                            "C1",
-                            "D9",
-                            "Z9",
-                            "Z9-D9",
-                            "B1-G3-B1-B1-Z9",
-                            "Z9-Z9-Z9-Z9-Z9-Z9-Z9-Z9-Z9-Z9",
-                            "Z8-Z9-Z9-Z9-Z9-Z9-Z9-Z9-Z9-Z9",
-                            "something",
-                            "B",
-                            "B1-A1-B1",
-                            "B1+B1",
-                            "B1-B1-",
-                            "B1-BB",
-                            "B1B1"
-                        };
-
-
-
-
-    for (int i = 0; i < 16; i++) {
-        strcpy(input, test[i]);
-        if (next_id(input, output)) {
-            printf("%s\nincorrect\n\n", input);
-        } else {
-            printf("%s\n%s\n\n", input, output);
-        }
-    }
-
     
-    while(1) {
-        printf("custom test (or type \"exit\"):\n");
-        scanf("%s", input);
-        if (strcmp(input, "exit") == 0) return 0;
-        else {
-            if (next_id(input, output)) {
-                printf("incorrect\n\n");
-            } else {
-                printf("%s\n\n", output);
-            }
-        }
+    if (next_id(argv[1], output)) {
+        printf("incorrect");
+        return 1;
+    } else {
+        printf("%s", output);
+        return 0;
     }
 }
