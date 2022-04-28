@@ -13,8 +13,7 @@ install(TARGETS next_id DESTINATION bin)
 enable_testing()
 
 # Добавить тесты:
-add_test(FirstTest next_id B1-Z9)
+add_test(FirstTest next_id B2-Z9)
 
 set_tests_properties(FirstTest PROPERTIES
-PASS_REGULAR_EXPRESSION "B2-B1"
-FAIL_REGULAR_EXPRESSION "Error!")
+PASS_REGULAR_EXPRESSION "B2-B1")
