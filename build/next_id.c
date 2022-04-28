@@ -8,9 +8,7 @@ const char voc[] = "BCDFGHJKLMNPQRSTVWXZ"; //словарь
 int check_input(char *in) { 
     int len = strlen(in);
     if (len % 3 - 2) return 1;      //кол-во символов не соответствует маске
-    
-    if (len < 2 || len > 29) return 1;
-    
+        
     for (int i = 0; i < len; i += 3){
         if (strchr(voc, in[i]) == NULL) {
             return 1;               //на месте согласной буквы другой символ
@@ -92,7 +90,7 @@ int main(int argc, char* argv[])
     char input[30], output[30];
     
     if (next_id(argv[1], output)) {
-        printf("incorrect");
+        printf("incorrect input");
         return 1;
     } else {
         printf("%s", output);
