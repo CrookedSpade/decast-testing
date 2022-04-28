@@ -8,4 +8,4 @@ project(MyProgram VERSION 1.0.0 LANGUAGES C)
 add_executable(next_id next_id.c)
 
 # Установить исполняемый файл "MyProgram" в директорию "bin":
-install(TARGETS MyProgram DESTINATION bin)
+install(TARGETS next_id DESTINATION bin)
