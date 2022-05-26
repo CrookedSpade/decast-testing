@@ -5,9 +5,9 @@ cmake_minimum_required(VERSION 3.8)
 project(decast_testing)
 
 # Добавить в сборку исполняемый файл "MyProgram":
-add_executable(next_id next_id.c)
+add_executable(test test.c)
 
 enable_testing()
 
 # Добавить тесты:
-add_test(1 next_id)
+add_test(1 test)
