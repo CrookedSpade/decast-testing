@@ -1,3 +1,4 @@
+#include "next_id.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -5,38 +6,74 @@ const char voc[] = "BCDFGHJKLMNPQRSTVWXZ"; //словарь
 
 
 //проверка корректности ввода
-int check_input(char *in) { 
+int check_input(const char *in, const char *out, const int size) {
+	if (in == NULL || out == NULL) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Buffer pointer is empty\n");
+#endif
+		return 1;
+	}
     int len = strlen(in);
-    if (len % 3 - 2) return 1;      //кол-во символов не соответствует маске
-        
-    for (int i = 0; i < len; i += 3){
+	if (size < len + 1) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Output buffer size is too small\n");
+#endif
+		return 1;
+	}
+    if (len % SEG_LENGTH - FIRST_SEG_LENGTH) {			//кол-во символов не соответствует маске
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+		return 1;
+	}
+    
+    if (len > MAX_ID_LENGTH) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Too long input\n");
+#endif
+		return 1;
+	}
+    
+    for (int i = 0; i < len; i += SEG_LENGTH) {			//на месте согласной буквы другой символ
         if (strchr(voc, in[i]) == NULL) {
-            return 1;               //на месте согласной буквы другой символ
-        }
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
     }
-    for (int i = 1; i < len; i += 3){
+    for (int i = 1; i < len; i += SEG_LENGTH){			//на месте цифры другой символ
         if (in[i] < '1' || in[i] > '9') {
-            return 1;               //на месте цифры другой символ
-        }
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
     }
-    for (int i = 2; i < len; i += 3){
+    for (int i = 2; i < len; i += SEG_LENGTH) {			//на месте дефиса другой символ
         if (in[i] != '-') {
-            return 1;               //на месте дефиса другой символ
-        }
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
     }
     return 0;
     
 }
 
 //поиск следующего идентификатора
-int next_id(char *in, char *out) {
-    if (check_input(in)) return 1;  //возвращает 1 в случае неверного ввода. иначе 0
+int next_id(const char *in, char *out, const int out_size) {
+	
+    if (check_input(in, out, out_size)) return 1;
 
-    int i = strlen(in) - 1;
+	strncpy(out, in, out_size - 1);
+	out[out_size - 1] = '\0';
+	
+    int i = strlen(out) - 1;
     char *pos;
-    strcpy(out, in);
     
-    do {                            //обработка строки с конца
+    do {										//обработка строки с конца
         
         if (out[i] == '9') {
             out[i] = '1';
@@ -49,51 +86,20 @@ int next_id(char *in, char *out) {
         pos = strchr(voc, out[i]);
         if (pos == voc + strlen(voc) - 1) {
             out[i] = voc[0];
-            i -= 2;
-            
+            i -= SEG_LENGTH - 1;				//переход к следующему сегменту (по убыванию)
         } else {
             out[i] = *(pos + 1);
             break;
         }
         
     } while (i >= 0);
-    
+	
     if (i < 0)
-        if (strlen(out) > 26)
-            strcpy(out, "B1");     //переполнение индекса
-        else strcat(out, "-B1");   //добавление разряда
+        if (strlen(out) + 1 > out_size - SEG_LENGTH)
+			strcpy(out, "B1");					//превышение MAX_ID_LENGTH. !поведение в этом случае в задании не оговорено!
+		else strcat(out, "-B1");				//добавление сегмента справа	
     
     return 0;
     
 }
 
-int main(int argc, char* argv[])
-{
-    if (argc < 2) {
-        printf("Not enough arguments");
-        return 1;
-    }
-    if (argc > 2) {
-        printf("Too many arguments");
-        return 1;
-    }
-    if (strlen(argv[1]) > 29) {
-        printf ("ID is too long");
-        return 1;
-    }
-    if (strlen(argv[1]) < 2) {
-        printf ("ID is too short");
-        return 1;
-    }
-    
-    // длина строки "??"*10 + "-"*9 + "\0" = 30
-    char input[30], output[30];
-    
-    if (next_id(argv[1], output)) {
-        printf("incorrect input");
-        return 1;
-    } else {
-        printf("%s", output);
-        return 0;
-    }
-}
