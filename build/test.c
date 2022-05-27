@@ -77,7 +77,7 @@ MU_TEST(buffer_size) {
     
     s = 4;                                  //переполнение output
     output = (char *)realloc(output, s);
-    mu_check(next_id("Z9", output, s));
+    mu_check(!next_id("Z9", output, s));
     
 }
 
