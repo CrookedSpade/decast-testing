@@ -4,63 +4,7 @@
 
 const char voc[] = "BCDFGHJKLMNPQRSTVWXZ"; //словарь
 
-
-//проверка корректности ввода
-int check_input(const char *in, const char *out, const int size) {
-	if (in == NULL || out == NULL) {
-#ifdef DEBUG
-		fprintf(stderr, "next_id: Buffer pointer is empty\n");
-#endif
-		return 1;
-	}
-    int len = strlen(in);
-	if (size < len + 1) {
-#ifdef DEBUG
-		fprintf(stderr, "next_id: Output buffer size is too small\n");
-#endif
-		return 1;
-	}
-    if (len % SEG_LENGTH - FIRST_SEG_LENGTH) {			//кол-во символов не соответствует маске
-#ifdef DEBUG
-		fprintf(stderr, "next_id: Incorrect input\n");
-#endif
-		return 1;
-	}
-    
-    if (len > MAX_ID_LENGTH) {
-#ifdef DEBUG
-		fprintf(stderr, "next_id: Too long input\n");
-#endif
-		return 1;
-	}
-    
-    for (int i = 0; i < len; i += SEG_LENGTH) {			//на месте согласной буквы другой символ
-        if (strchr(voc, in[i]) == NULL) {
-#ifdef DEBUG
-			fprintf(stderr, "next_id: Incorrect input\n");
-#endif
-			return 1;
-		}
-    }
-    for (int i = 1; i < len; i += SEG_LENGTH){			//на месте цифры другой символ
-        if (in[i] < '1' || in[i] > '9') {
-#ifdef DEBUG
-			fprintf(stderr, "next_id: Incorrect input\n");
-#endif
-			return 1;
-		}
-    }
-    for (int i = 2; i < len; i += SEG_LENGTH) {			//на месте дефиса другой символ
-        if (in[i] != '-') {
-#ifdef DEBUG
-			fprintf(stderr, "next_id: Incorrect input\n");
-#endif
-			return 1;
-		}
-    }
-    return 0;
-    
-}
+int check_input(const char *in, const char *out, const int size);
 
 //поиск следующего идентификатора
 int next_id(const char *in, char *out, const int out_size) {
@@ -100,6 +44,66 @@ int next_id(const char *in, char *out, const int out_size) {
 		else strcat(out, "-B1");				//добавление сегмента справа	
     
     return 0;
-    
 }
 
+
+
+//проверка корректности ввода
+int check_input(const char *in, const char *out, const int size) {
+	if (in == NULL || out == NULL) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Buffer pointer is empty\n");
+#endif
+		return 1;
+	}
+	
+    int len = strlen(in);
+	if (size < len + 1) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Output buffer size is too small\n");
+#endif
+		return 1;
+	}
+	
+    if (len % SEG_LENGTH - FIRST_SEG_LENGTH) {			//кол-во символов не соответствует маске
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+		return 1;
+	}
+    
+    if (len > MAX_ID_LENGTH) {
+#ifdef DEBUG
+		fprintf(stderr, "next_id: Too long input\n");
+#endif
+		return 1;
+	}
+    
+    for (int i = 0; i < len; i += SEG_LENGTH) {			//на месте согласной буквы другой символ
+        if (strchr(voc, in[i]) == NULL) {
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
+    }
+	
+    for (int i = 1; i < len; i += SEG_LENGTH){			//на месте цифры другой символ
+        if (in[i] < '1' || in[i] > '9') {
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
+    }
+	
+    for (int i = 2; i < len; i += SEG_LENGTH) {			//на месте дефиса другой символ
+        if (in[i] != '-') {
+#ifdef DEBUG
+			fprintf(stderr, "next_id: Incorrect input\n");
+#endif
+			return 1;
+		}
+    }
+    return 0;
+}
